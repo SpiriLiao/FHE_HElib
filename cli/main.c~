@@ -1,0 +1,15 @@
+#include <stdio.h>
+#include <string.h>
+
+int main()
+{
+			FILE* fp= fopen("cli","r");
+			int length;
+			char buffer[1024];
+			while((length = fread(buffer,sizeof(char),sizeof(buffer),fp)) > 0)
+			{
+				printf("length = %d\n",length);
+				bzero(buffer, sizeof(buffer));
+			}
+			return 0;
+}
