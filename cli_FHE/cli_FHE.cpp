@@ -17,7 +17,7 @@ int main(int argc, char **argv)
 {
     /* On our trusted system we generate a new key
      * (or read one in) and encrypt the secret data set.
-    */    
+    */
 
     long m = 0, p = 715827883, r = 1;   // Native plaintext space(本机明文空间)
                                 // Computations will be 'modulo p'
@@ -40,15 +40,17 @@ int main(int argc, char **argv)
     cerr << context << endl;
 
     buildModChain(context, L, c);   // modify the context, adding primes to the modulus chain
-    FHESecKey secretKey(context);   // contruct a secret key structure    
+    FHESecKey secretKey(context);   // contruct a secret key structure
 
-// 输出密钥    
-//    cerr << secretKey << endl;
+// 输出私钥
+    cout << "输出私钥：" << endl;
+    cerr << secretKey << endl;
 
     const FHEPubKey& publicKey = secretKey; // an "upcast": FHESecKey is a subclass of FHEPubKey
 
 // 输出公钥
-//    cerr << publicKey << endl;
+    cout << "输出公钥：" << endl;
+    cerr << publicKey << endl;
 
     if (0 == d)
     G = context.alMod.getFactorsOverZZ()[0];
@@ -58,6 +60,14 @@ int main(int argc, char **argv)
     addSome1DMatrices(secretKey);
     cout << "Generated key" << endl;
 
+// 输出私钥
+    cout << "输出私钥：" << endl;
+//    cout << secretKey << endl;
+
+// 输出公钥
+    cout << "输出公钥：" << endl;
+//    cout << publicKey << endl;
+
     EncryptedArray ea(context, G);  // construct an Encrypted array object ea that is
                                     // associated with the given context and polynomial G
 
@@ -66,7 +76,7 @@ int main(int argc, char **argv)
 
     vector<long> v1;
     for (int i = 0; i < nslots; i++){
-        v1.push_back(i);
+        v1.push_back(i*4);
     }
 // 输出向量v1的值
     cout << "向量v1的值如下:" << endl;
@@ -81,7 +91,7 @@ int main(int argc, char **argv)
 
     vector<long> v2;
     for (int i = 0; i < nslots; i++){
-        v2.push_back(i*3);
+        v2.push_back(5);
     }
     Ctxt ct2(publicKey);
     ea.encrypt(ct2, publicKey, v2);
@@ -92,7 +102,7 @@ int main(int argc, char **argv)
 // 把密文ct1和ct2传输至服务器
     std::ostringstream oss;
     oss << ct1;
-    cout << "发送给服务器的密文ct1大小为：" << endl;
+    cout << "发送给服务器的密文ct1大小为：";
     cout << oss.str().size() << endl;
     if (send(sock_fd, oss.str().c_str(), oss.str().size(), 0) < 0)
     {
@@ -101,8 +111,12 @@ int main(int argc, char **argv)
     }
 
     sleep(1);
+// 这条语句很重要，发送下一次数据之前把oss对象清空，不然会出现"数据重复"
+    oss.str("");
+
+    sleep(1);
     oss << ct2;
-    cout << "发送给服务器的密文ct2大小为：" << endl;
+    cout << "发送给服务器的密文ct2大小为：";
     cout << oss.str().size() << endl;
     if (send(sock_fd, oss.str().c_str(), oss.str().size(), 0) < 0)
     {
@@ -138,18 +152,6 @@ int main(int argc, char **argv)
             iss >> ctProd;
         }
     }
-
-
-
-
-// 服务器端负责的计算
-/*
-    Ctxt ctSum = ct1;
-    Ctxt ctProd = ct1;      // Product(乘积，作品)
-
-    ctSum += ct2;
-    ctProd *= ct2;
-*/
 
 // 收到服务器端传回的数据进行解密
 
@@ -193,103 +195,3 @@ int sock_cli_init()
 
     return sfd;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
