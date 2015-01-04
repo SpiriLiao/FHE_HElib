@@ -11,57 +11,11 @@
 #include <sock.h>
 
 int sock_ser_init();
+int recv_data(int conn);
 
 int main(int argc, char **argv)
 {
-    /* On our trusted system we generate a new key
-     * (or read one in) and encrypt the secret data set.
-    */    
-
-    long m = 0, p = 715827883, r = 1;   // Native plaintext space(本机明文空间)
-                                // Computations will be 'modulo p'
-    long L = 16;                // Levels
-    long c = 3;                 // Columns in key switching matrix
-    long w = 64;                // Hamming weight of secret key
-    long d = 0;
-    long security = 128;
-    ZZX G;
-//    m = FindM(security, L, c, p, d, 0, 0);
-    m = 100;
-
-
-    FHEcontext context(m, p, r);    // initialize context
-
-// 输出整个FHEcontext的内容
-    cout << "输出整个FHEcontext的内容：" << endl;
-    writeContextBase(cout, context);
-    cout << context << endl;
-
-    buildModChain(context, L, c);   // modify the context, adding primes to the modulus chain
-    FHESecKey secretKey(context);   // contruct a secret key structure
-
-// 输出密钥
-    cout << "输出密钥：" << endl;
-    cout << secretKey << endl;
-
-    const FHEPubKey& publicKey = secretKey; // an "upcast": FHESecKey is a subclass of FHEPubKey
-
-// 输出公钥
-    cout << "输出公钥：" << endl;
-    cout << publicKey << endl;
-
-    if (0 == d)
-    G = context.alMod.getFactorsOverZZ()[0];
-
-    secretKey.GenSecKey(w);         // actually generate a secret key with Hamming weight w
-
-    addSome1DMatrices(secretKey);
-    cout << "Generated key" << endl;
-
-    EncryptedArray ea(context, G);  // construct an Encrypted array object ea that is
-                                    // associated with the given context and polynomial G
-
-// 套接字接收数据
+// 套接字连接初始化
     int sock_fd =sock_ser_init();
 
     struct sockaddr_in  peeraddr;
@@ -71,7 +25,23 @@ int main(int argc, char **argv)
         ERR_EXIT("accept err");
     printf("客户端连接!\n");
 
+// 接收含有FHEcontext和publicKey的iotest.txt文件
+    recv_data(conn);    
 
+    fstream keyFile("iotest.txt", fstream::in);    
+    unsigned long m1, p1, r1;
+    readContextBase(keyFile, m1, p1, r1);
+    FHEcontext context(m1, p1, r1);    
+    keyFile >> context;
+/*
+    // 输出整个FHEcontext的内容
+    cout << "输出整个FHEcontext的内容：" << endl;
+    writeContextBase(cerr, context);
+    cerr << context << endl;
+*/
+    FHESecKey secretKey(context);
+    FHEPubKey publicKey = secretKey;
+    keyFile >> publicKey;
 
 // 构造密文ct1和ct2
     Ctxt ct1(publicKey);
@@ -79,42 +49,39 @@ int main(int argc, char **argv)
 
     for (int i = 0; i < 2; ++i)
     {
-    int buffer_size = 100000;
-    char *buffer = new char[buffer_size];
-    int bytes_read = recv(conn, buffer, buffer_size, 0);
-// 输出接收到的密文
-//    cerr << "输出接收到的密文：" << endl;
-    puts(buffer);
+        int buffer_size = 100000;
+        char *buffer = new char[buffer_size];
+        int bytes_read = recv(conn, buffer, buffer_size, 0);
+    // 输出接收到的密文
+    //    cerr << "输出接收到的密文：" << endl;
+    //    puts(buffer);
 
-    string sBuffer((const char*)buffer, bytes_read);
-    cout << "收到的密文大小sBuffer为：" << sBuffer.length() << endl;
-    delete buffer;
-    std::istringstream iss;
+        string sBuffer((const char*)buffer, bytes_read);
+        cout << "收到的密文大小sBuffer为：" << sBuffer.length() << endl;
+        delete buffer;
+        std::istringstream iss;
 
-    iss.str(sBuffer);
+        iss.str(sBuffer);
 
-    if (0 == i)
-    {
-        iss >> ct1;
-    }
-    else if (1 == i)
-    {
-        iss >> ct2;
-    }
-    }
+        if (0 == i)
+        {
+            iss >> ct1;
+        }
+        else if (1 == i)
+        {
+            iss >> ct2;
+        }
+    }    
 
+    Ctxt ctSum = ct1;    
+    Ctxt ctProd = ct1;      // Product(乘积)
 
-
-    Ctxt ctSum = ct1;
-    Ctxt ctProd = ct1;      // Product(乘积，作品)
-
-    ctSum += ct2;
+    ctSum += ct2;        
     ctProd *= ct2;
 
-/*
-// 把计算后的结果密文传回客户端
-    std::ostringstream oss;
-    oss << ctSum;
+// 把计算后的结果密文传回客户端    
+    std::ostringstream oss;    
+    oss << ctSum;    
     cout << "返回客户端的和值密文大小为：" << endl;
     cout << oss.str().size() << endl;
 
@@ -123,7 +90,10 @@ int main(int argc, char **argv)
         puts("\nSend failed!");
         return 1;
     }
-    sleep(1);
+    sleep(1);    
+
+    oss.str("");
+
     oss << ctProd;
     cout << "返回客户端的乘积密文大小为：" << endl;
     cout << oss.str().size() << endl;
@@ -131,74 +101,6 @@ int main(int argc, char **argv)
     {
         puts("\nSend failed!");
         return 1;
-    }
-*/
-
-/*
-    if (0 == d)
-    G = context.alMod.getFactorsOverZZ()[0];
-
-    secretKey.GenSecKey(w);         // actually generate a secret key with Hamming weight w
-
-    addSome1DMatrices(secretKey);
-    cout << "Generated key" << endl;
-
-    EncryptedArray ea(context, G);  // construct an Encrypted array object ea that is
-                                    // associated with the given context and polynomial G
-
-    long nslots = ea.size();
-    cout << "nslots 的大小为: " << nslots << endl;
-
-    vector<long> v1;
-    for (int i = 0; i < nslots; i++){
-        v1.push_back(i*3);
-    }
-    Ctxt ct1(publicKey);
-    ea.encrypt(ct1, publicKey, v1);
-// 输出密文c1
-    cerr << "密文c1如下:" << endl;
-    cerr << ct1 << endl;
-
-    vector<long> v2;
-    for (int i = 0; i < nslots; i++){
-        v2.push_back(i);
-    }
-    Ctxt ct2(publicKey);
-    ea.encrypt(ct2, publicKey, v2);
-// 输出密文c2
-    cerr << "密文c2如下:" << endl;
-    cerr << ct2 << endl;
-
-    cout << "向量v1的值如下:" << endl;
-    copy (v1.begin(), v1.end(), ostream_iterator<long>(cout, " "));
-    cout << endl;
-*/
-
-
-/*
-    Ctxt ctSum = ct1;
-    Ctxt ctProd = ct1;      // Product(乘积，作品)
-
-    ctSum += ct2;
-    ctProd *= ct2;
-*/
-
-
-    vector<long> res;
-    ea.decrypt(ctSum, secretKey, res);
-/*
-    cout << "向量res的值如下:" << endl;
-    copy (res.begin(), res.end(), ostream_iterator<long>(cout, " "));
-    cout << endl;
-*/
-    cout << "All computation are modulo " << p << "." << endl;
-    for (int i = 0; i < res.size(); i++){
-        cout /*<< v1[i] << " + " << v2[i] << " = " */<< res[i] << endl;
-    }
-
-    ea.decrypt(ctProd, secretKey, res);
-    for (int i = 0; i < res.size(); i++){
-        cout /*<< v1[i] << " * " << v2[i] << " = " */<< res[i] << endl;
     }
 
     return 0;
@@ -229,6 +131,71 @@ int sock_ser_init()
     return sfd;
 }
 
+//接收文件名,
+int recv_filename(int conn,char** name)
+{
+    int file_len =0;
+    int r=0;
+
+    if((r=recv(conn,&file_len,sizeof(file_len),MSG_WAITALL)) <= 0)
+        exit(1);
+    if((r = recv(conn,(*name),file_len,MSG_WAITALL)) <= 0)
+        exit(1);
+    (*name)[file_len] = 0;  // 接收到文件名后加/0
+    //printf("// %s //\n",*name);
+
+    return  0;
+}
+
+// 接收数据
+int recv_data(int conn)
+{
+
+    int file_len = 0;
+    char buffer[1024]={0};
+    char file_name[128]={0};
+
+    if(recv(conn,&file_len,sizeof(file_len),MSG_WAITALL) < 0)
+        return -1;
+    if(recv(conn,file_name,file_len,MSG_WAITALL) < 0)
+        return -1;
+    file_name[file_len] = 0;// 接收到文件名后加/0
+    printf("%s文件创建成功\n",file_name);
+
+    // 以可写方式创建文件
+    FILE *fp = fopen(file_name, "w");
+    if(fp == NULL)
+        ERR_EXIT("fopen err");
+
+    bzero(buffer, sizeof(buffer));
+    int length = 0;
+    int r;
+
+    while(1)
+    {
+        // 接收数据包的大小
+        recv(conn,&length,sizeof(length),MSG_WAITALL);
+        //printf("length = %d\n",length);
+
+        if(length == 0)
+            break;// 当长度为0时,接收完毕,退出
+
+        // 接收数据包的内容
+        recv(conn,buffer,length,MSG_WAITALL);
+
+
+        if(fwrite(buffer, sizeof(char), length, fp) < length)
+        {
+            printf("%s:\t 写入失败\n", file_name);
+            return -1;
+        }
+        bzero(buffer, sizeof(buffer));
+
+
+    }    
+    fclose(fp);
+    printf("%s 文件上传成功\n",file_name);
+}
 
 
 
