@@ -29,7 +29,7 @@ int main(int argc, char **argv)
     long security = 128;
     ZZX G;
 //    m = FindM(security, L, c, p, d, 0, 0);
-    m = 100;
+    m = 212;
 
     int sock_fd = sock_cli_init();
 
@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 // 新建iotest.txt保存FHEcontext和publicKey
     fstream keyFile("iotest.txt", fstream::out|fstream::trunc);
         assert(keyFile.is_open());
-// Output the FHEcontext to file
+// 输出FHEcontext到iotest.txt
     writeContextBase(keyFile, context);
     keyFile << context << endl;
 
@@ -62,7 +62,7 @@ int main(int argc, char **argv)
 
 // 输出私钥
     cout << "输出私钥：" << endl;
-    cout << secretKey << endl;
+//    cout << secretKey << endl;
 
 // 输出公钥
     cout << "输出公钥：" << endl;
@@ -79,12 +79,14 @@ int main(int argc, char **argv)
     cout << "nslots 的大小为: " << nslots << endl;
 
     vector<long> v1;
-    for (int i = 0; i < nslots; i++){
-        v1.push_back(i*4);
-    }
+    v1.push_back(0);
+    v1.push_back(111);
+    v1.push_back(170);
+    v1.push_back(66);
+
 // 输出向量v1的值
     cout << "向量v1的值如下:" << endl;
-//    copy (v1.begin(), v1.end(), ostream_iterator<long>(cout, " "));
+    copy (v1.begin(), v1.end(), ostream_iterator<long>(cout, " "));
     cout << endl;
 
     Ctxt ct1(publicKey);
@@ -92,7 +94,7 @@ int main(int argc, char **argv)
 
     vector<long> v2;
     for (int i = 0; i < nslots; i++){
-        v2.push_back(5);
+        v2.push_back(i*3);
     }
     Ctxt ct2(publicKey);
     ea.encrypt(ct2, publicKey, v2);
@@ -119,10 +121,9 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    sleep(1);
 // 这条语句很重要，发送下一次数据之前把oss对象清空，不然会出现"数据重复"
     oss.str("");
-
+/*
     sleep(1);
     oss << ct2;
     cout << "发送给服务器的密文ct2大小为：";
@@ -132,7 +133,8 @@ int main(int argc, char **argv)
         puts("\nSend failed!");
         return 1;
     }
-
+*/
+/*
 // 接收服务器计算后的结果密文
     Ctxt ctSum(publicKey);
     Ctxt ctProd(publicKey);
@@ -178,7 +180,7 @@ int main(int argc, char **argv)
     }
 
     close(sock_fd);
-
+*/
     return 0;
 }
 

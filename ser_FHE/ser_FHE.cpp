@@ -9,8 +9,10 @@
 #include <iterator>
 
 #include <sock.h>
+#include <mysql/mysql.h>
 
 int sock_ser_init();
+void mysql_init(MYSQL& mysql);
 int recv_data(int conn);
 
 int main(int argc, char **argv)
@@ -47,7 +49,9 @@ int main(int argc, char **argv)
     Ctxt ct1(publicKey);
     Ctxt ct2(publicKey);
 
-    for (int i = 0; i < 2; ++i)
+// 初始化数据库连接
+    MYSQL   mysql;
+    for (int i = 0; i < 1; ++i)
     {
         int buffer_size = 100000;
         char *buffer = new char[buffer_size];
@@ -71,8 +75,17 @@ int main(int argc, char **argv)
         {
             iss >> ct2;
         }
-    }    
+        cout << "++++++++++++++++++++++++++++" << endl;
+        mysql_init(mysql);
+        cout << "++++++++++++++++++++++++++++" << endl;
 
+        string arr;
+        char *buf = new char[buffer_size];
+        sprintf(buf, "insert into Persons values (1, '%s');", sBuffer.c_str());
+        mysql_query(&mysql, buf/*"insert into Persons values(1,'b')"*/);
+    }
+
+/*
     Ctxt ctSum = ct1;    
     Ctxt ctProd = ct1;      // Product(乘积)
 
@@ -102,7 +115,7 @@ int main(int argc, char **argv)
         puts("\nSend failed!");
         return 1;
     }
-
+*/
     return 0;
 }
 
@@ -195,6 +208,25 @@ int recv_data(int conn)
     }    
     fclose(fp);
     printf("%s 文件上传成功\n",file_name);
+}
+
+void mysql_init(MYSQL& mysql)
+{
+    MYSQL_RES   *result;
+    MYSQL_ROW   row;
+
+    //initialize   MYSQL   structure
+    mysql_init(&mysql);    
+    //connect   to   database
+    //   mysql_real_connect(&mysql,"localhost","root","nriet","test",0,NULL,0);
+    if (!mysql_real_connect(&mysql,"127.0.0.1","root","123456","fhe",0,NULL,0))
+    {
+        printf("%s", mysql_error(&mysql));
+    }
+     else
+    {
+        printf("YES, Conected succeed!\n");
+    }
 }
 
 

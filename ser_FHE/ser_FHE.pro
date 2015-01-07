@@ -18,3 +18,8 @@ INCLUDEPATH += $$PWD/../../../../../root/sw/include
 DEPENDPATH += $$PWD/../../../../../root/sw/include
 
 unix:!macx:!symbian: PRE_TARGETDEPS += $$PWD/../../../../../root/sw/lib/libntl.a
+
+unix:!macx:!symbian: LIBS += -L$$PWD/../../../../../usr/lib/mysql/ -lmysqlclient
+
+INCLUDEPATH += $$PWD/../../../../../usr/lib/mysql
+DEPENDPATH += $$PWD/../../../../../usr/lib/mysql
