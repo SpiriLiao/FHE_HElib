@@ -4,16 +4,17 @@ SOURCES += \
 HEADERS += \
     sock.h
 
-unix:!macx:!symbian: LIBS += -L$$PWD/../libfhe.a/ -lfhe
 
-INCLUDEPATH += $$PWD/../libfhe.a
-DEPENDPATH += $$PWD/../libfhe.a
+unix:!macx:!symbian: LIBS += -L$$PWD/../../../../../usr/local/fhe/lib/ -lfhe
 
-unix:!macx:!symbian: PRE_TARGETDEPS += $$PWD/../libfhe.a/libfhe.a
+INCLUDEPATH += $$PWD/../../../../../usr/local/fhe/include
+DEPENDPATH += $$PWD/../../../../../usr/local/fhe/include
 
-unix:!macx:!symbian: LIBS += -L$$PWD/../../../../../root/sw/lib/ -lntl
+unix:!macx:!symbian: PRE_TARGETDEPS += $$PWD/../../../../../usr/local/fhe/lib/libfhe.a
 
-INCLUDEPATH += $$PWD/../../../../../root/sw/include
-DEPENDPATH += $$PWD/../../../../../root/sw/include
+unix:!macx:!symbian: LIBS += -L$$PWD/../../../../../usr/local/sw/lib/ -lntl
 
-unix:!macx:!symbian: PRE_TARGETDEPS += $$PWD/../../../../../root/sw/lib/libntl.a
+INCLUDEPATH += $$PWD/../../../../../usr/local/sw/include
+DEPENDPATH += $$PWD/../../../../../usr/local/sw/include
+
+unix:!macx:!symbian: PRE_TARGETDEPS += $$PWD/../../../../../usr/local/sw/lib/libntl.a

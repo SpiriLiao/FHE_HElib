@@ -9,6 +9,8 @@
 #include <iterator>
 
 #include <sock.h>
+#include <QString>
+#include <QDebug>
 
 
 int sock_cli_init();
@@ -38,7 +40,7 @@ int main(int argc, char **argv)
 
 // 新建iotest.txt保存FHEcontext和publicKey
     fstream keyFile("iotest.txt", fstream::out|fstream::trunc);
-        assert(keyFile.is_open());
+//        assert(keyFile.is_open());
 // 输出FHEcontext到iotest.txt
     writeContextBase(keyFile, context);
     keyFile << context << endl;
@@ -66,7 +68,7 @@ int main(int argc, char **argv)
 
 // 输出公钥
     cout << "输出公钥：" << endl;
-//    cout << publicKey << endl;
+    cout << publicKey << endl;
 
 //  输出公钥到iotest.txt
     keyFile << publicKey << endl;
@@ -78,26 +80,60 @@ int main(int argc, char **argv)
     long nslots = ea.size();
     cout << "nslots 的大小为: " << nslots << endl;
 
-    vector<long> v1;
-    v1.push_back(0);
-    v1.push_back(111);
-    v1.push_back(170);
-    v1.push_back(66);
+// 姓名
+    cout << endl << "请输入名字:";
+    string name;
+    cin >> name;
 
-// 输出向量v1的值
-    cout << "向量v1的值如下:" << endl;
-    copy (v1.begin(), v1.end(), ostream_iterator<long>(cout, " "));
-    cout << endl;
+    vector<long> vec_name;
+    vec_name.push_back(name.operator [](0));
+    vec_name.push_back(name.operator [](1));
+    vec_name.push_back(name.operator [](2));
+    vec_name.push_back('a');
 
-    Ctxt ct1(publicKey);
-    ea.encrypt(ct1, publicKey, v1);
+// 性别
+    cout << endl << "请输入性别:";
+    string gender;
+    cin >> gender;
 
-    vector<long> v2;
-    for (int i = 0; i < nslots; i++){
-        v2.push_back(i*3);
+    vector<long> vec_gender;
+    vec_gender.push_back(gender.operator [](0));
+    vec_gender.push_back(gender.operator [](1));
+    vec_gender.push_back(gender.operator [](2));
+    vec_gender.push_back('a');
+
+// 身高
+    cout << endl << "请输入身高:";
+    string height;
+    cin >> height;
+
+    vector<long> vec_height;
+    vec_height.push_back(height.operator [](0));
+    vec_height.push_back(height.operator [](1));
+    vec_height.push_back(height.operator [](2));
+    vec_height.push_back('a');
+
+// 体重
+    cout << endl << "请输入体重:";
+    string weight;
+    cin >> weight;
+
+    vector<long> vec_weight;
+    vec_weight.push_back(weight.operator [](0));
+    vec_weight.push_back(weight.operator [](1));
+    vec_weight.push_back(weight.operator [](2));
+    vec_weight.push_back('a');
+
+// 构造密文数组存放用户信息
+    Ctxt* ctxt[4];
+    for (int i = 0; i < 4; i++)
+    {
+        ctxt[i] = new Ctxt(publicKey);
     }
-    Ctxt ct2(publicKey);
-    ea.encrypt(ct2, publicKey, v2);
+    ea.encrypt(*ctxt[0], publicKey, vec_name);
+    ea.encrypt(*ctxt[1], publicKey, vec_gender);
+    ea.encrypt(*ctxt[2], publicKey, vec_height);
+    ea.encrypt(*ctxt[3], publicKey, vec_weight);
 
 // 把含有FHEcontext和publicKey的iotest.txt发送给服务器
     FILE *fp = fopen("iotest.txt", "r");// 只读方式打开
@@ -110,42 +146,40 @@ int main(int argc, char **argv)
     send_data(sock_fd, "iotest.txt");
     cout << "+++++++++++++++++++++++" << endl;
 
-// 把密文ct1和ct2传输至服务器
-    std::ostringstream oss;
-    oss << ct1;
-    cout << "发送给服务器的密文ct1大小为：";
-    cout << oss.str().size() << endl;
-    if (send(sock_fd, oss.str().c_str(), oss.str().size(), 0) < 0)
+// 把用户信息密文传输至服务器
+    sleep(1);
+    for (int i = 0; i < 4; ++i)
     {
-        puts("\nSend failed!");
-        return 1;
+        std::ostringstream oss;
+        oss << *ctxt[i];
+        cout << "发送给服务器的密文大小为：";
+        cout << oss.str().size() << endl;
+        if (send(sock_fd, oss.str().c_str(), oss.str().size(), 0) < 0)
+        {
+            puts("\nSend failed!");
+            return 1;
+        }
+
+    // 这条语句很重要，发送下一次数据之前把oss对象清空，不然会出现"数据重复"
+        oss.str("");
+        sleep(1);
     }
 
-// 这条语句很重要，发送下一次数据之前把oss对象清空，不然会出现"数据重复"
-    oss.str("");
-/*
-    sleep(1);
-    oss << ct2;
-    cout << "发送给服务器的密文ct2大小为：";
-    cout << oss.str().size() << endl;
-    if (send(sock_fd, oss.str().c_str(), oss.str().size(), 0) < 0)
+// 接收客户端的处理信息
+    Ctxt* ct_res[4];
+    for (int i = 0; i < 4; i++)
     {
-        puts("\nSend failed!");
-        return 1;
+        ct_res[i] = new Ctxt(publicKey);
     }
-*/
-/*
-// 接收服务器计算后的结果密文
-    Ctxt ctSum(publicKey);
-    Ctxt ctProd(publicKey);
-    for (int i = 0; i < 2; ++i)
+
+    for (int i = 0; i < 4; i++)
     {
         int buffer_size = 100000;
         char *buffer = new char[buffer_size];
         int bytes_read = recv(sock_fd, buffer, buffer_size, 0);
     // 输出接收到的密文
-        cerr << "输出服务器计算后发送回来的的密文：" << endl;
-//        puts(buffer);
+    //    cerr << "输出服务器计算后发送回来的的密文：" << endl;
+    //        puts(buffer);
 
         string sBuffer((const char*)buffer, bytes_read);
         cout << "收到的结果密文大小sBuffer为：" << sBuffer.length() << endl;
@@ -154,33 +188,28 @@ int main(int argc, char **argv)
 
         iss.str(sBuffer);
 
-        if (0 == i)
-        {
-            iss >> ctSum;
-        }
-        else if (1 == i)
-        {
-            iss >> ctProd;
-        }
+        iss >> *ct_res[i];
     }
 
-// 收到服务器端传回的数据进行解密
-
-    vector<long> res;
-    ea.decrypt(ctSum, secretKey, res);
-
-    cout << "All computation are modulo " << p << "." << endl;
-    for (int i = 0; i < res.size(); i++){
-        cout << v1[i] << " + " << v2[i] << " = " << res[i] << endl;
+    vector<long> res[4];
+    for (int i = 0; i < 4; i++)
+    {
+        ea.decrypt(*ct_res[i], secretKey, res[i]);
     }
+// 输出向量res的值
+    cout << "向量res的值如下(用户名):" << endl;
+    copy (res[2].begin(), res[2].end(), ostream_iterator<long>(cout, " "));
+    cout << endl;
 
-    ea.decrypt(ctProd, secretKey, res);
-    for (int i = 0; i < res.size(); i++){
-        cout << v1[i] << " * " << v2[i] << " = " << res[i] << endl;
-    }
+    QString str_res;
+    str_res.append((char )res[2].operator [](0));
+    str_res.append((char )res[2].operator [](1));
+    str_res.append((char )res[2].operator [](2));
+
+    qDebug() << str_res << endl;
 
     close(sock_fd);
-*/
+
     return 0;
 }
 
@@ -195,7 +224,7 @@ int sock_cli_init()
     cliaddr.sin_port = htons(4567);
 //    servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
 //    servaddr.sin_addr.s_addr = inet_addr("127.0.0.1")
-    inet_aton("192.168.137.100",&cliaddr.sin_addr);
+    inet_aton("192.168.137.33",&cliaddr.sin_addr);
 
     if( connect(sfd,(struct sockaddr*)&cliaddr,sizeof(cliaddr)) < 0)
         ERR_EXIT("connect err");

@@ -12,7 +12,7 @@
 #include <mysql/mysql.h>
 
 int sock_ser_init();
-void mysql_init(MYSQL& mysql);
+void mysql_init_d(MYSQL& mysql);
 int recv_data(int conn);
 
 int main(int argc, char **argv)
@@ -28,12 +28,12 @@ int main(int argc, char **argv)
     printf("客户端连接!\n");
 
 // 接收含有FHEcontext和publicKey的iotest.txt文件
-    recv_data(conn);    
+    recv_data(conn);
 
-    fstream keyFile("iotest.txt", fstream::in);    
+    fstream keyFile("iotest.txt", fstream::in);
     unsigned long m1, p1, r1;
     readContextBase(keyFile, m1, p1, r1);
-    FHEcontext context(m1, p1, r1);    
+    FHEcontext context(m1, p1, r1);
     keyFile >> context;
 /*
     // 输出整个FHEcontext的内容
@@ -45,17 +45,31 @@ int main(int argc, char **argv)
     FHEPubKey publicKey = secretKey;
     keyFile >> publicKey;
 
-// 构造密文ct1和ct2
-    Ctxt ct1(publicKey);
-    Ctxt ct2(publicKey);
+// 构造密文数组存放用户信息
+    Ctxt* ctxt[4];
+    for (int i = 0; i < 4; i++)
+    {
+        ctxt[i] = new Ctxt(publicKey);
+    }
 
 // 初始化数据库连接
     MYSQL   mysql;
-    for (int i = 0; i < 1; ++i)
+    cout << "++++++++++++++++++++++++++++" << endl;
+    mysql_init_d(mysql);
+    cout << "++++++++++++++++++++++++++++" << endl;
+
+    sleep(1);
+    char *ctxt_buf[4];
+    int buffer_size = 100000;
+    for (int i = 0; i < 4; i++)
     {
-        int buffer_size = 100000;
+        ctxt_buf[i] = new char[buffer_size];
+    }
+    for (int i = 0; i < 4; i++)
+    {        
         char *buffer = new char[buffer_size];
         int bytes_read = recv(conn, buffer, buffer_size, 0);
+        strcpy(ctxt_buf[i], buffer);
     // 输出接收到的密文
     //    cerr << "输出接收到的密文：" << endl;
     //    puts(buffer);
@@ -66,56 +80,35 @@ int main(int argc, char **argv)
         std::istringstream iss;
 
         iss.str(sBuffer);
+        iss >> *ctxt[i];
 
-        if (0 == i)
-        {
-            iss >> ct1;
-        }
-        else if (1 == i)
-        {
-            iss >> ct2;
-        }
-        cout << "++++++++++++++++++++++++++++" << endl;
-        mysql_init(mysql);
-        cout << "++++++++++++++++++++++++++++" << endl;
-
-        string arr;
-        char *buf = new char[buffer_size];
-        sprintf(buf, "insert into Persons values (1, '%s');", sBuffer.c_str());
-        mysql_query(&mysql, buf/*"insert into Persons values(1,'b')"*/);
+        sleep(1);
     }
 
-/*
-    Ctxt ctSum = ct1;    
-    Ctxt ctProd = ct1;      // Product(乘积)
+    char *buf = new char[buffer_size];
+    sprintf(buf, "insert into Persons values (1, '%s', '%s', '%s', '%s');", ctxt_buf[0], ctxt_buf[1], ctxt_buf[2], ctxt_buf[3]);
+    mysql_query(&mysql, buf/*"insert into Persons values(1,'b')"*/);
+    delete buf;
 
-    ctSum += ct2;        
-    ctProd *= ct2;
 
-// 把计算后的结果密文传回客户端    
-    std::ostringstream oss;    
-    oss << ctSum;    
-    cout << "返回客户端的和值密文大小为：" << endl;
-    cout << oss.str().size() << endl;
-
-    if (send(conn, oss.str().c_str(), oss.str().size(), 0) < 0)
+// 把用户信息密文返回到客户端
+    for (int i = 0; i < 4; i++)
     {
-        puts("\nSend failed!");
-        return 1;
-    }
-    sleep(1);    
+        std::ostringstream oss;
+        oss << *ctxt[i];
+        cout << "返回客户端的和值密文大小为：";
+        cout << oss.str().size() << endl;
 
-    oss.str("");
+        if (send(conn, oss.str().c_str(), oss.str().size(), 0) < 0)
+        {
+            puts("\nSend failed!");
+            return 1;
+        }
+        sleep(1);
 
-    oss << ctProd;
-    cout << "返回客户端的乘积密文大小为：" << endl;
-    cout << oss.str().size() << endl;
-    if (send(conn, oss.str().c_str(), oss.str().size(), 0) < 0)
-    {
-        puts("\nSend failed!");
-        return 1;
+        oss.str("");
     }
-*/
+
     return 0;
 }
 
@@ -205,18 +198,18 @@ int recv_data(int conn)
         bzero(buffer, sizeof(buffer));
 
 
-    }    
+    }
     fclose(fp);
     printf("%s 文件上传成功\n",file_name);
 }
 
-void mysql_init(MYSQL& mysql)
+void mysql_init_d(MYSQL& mysql)
 {
     MYSQL_RES   *result;
     MYSQL_ROW   row;
 
     //initialize   MYSQL   structure
-    mysql_init(&mysql);    
+    mysql_init(&mysql);
     //connect   to   database
     //   mysql_real_connect(&mysql,"localhost","root","nriet","test",0,NULL,0);
     if (!mysql_real_connect(&mysql,"127.0.0.1","root","123456","fhe",0,NULL,0))
@@ -225,7 +218,7 @@ void mysql_init(MYSQL& mysql)
     }
      else
     {
-        printf("YES, Conected succeed!\n");
+        printf("Database Conected succeed!\n");
     }
 }
 
