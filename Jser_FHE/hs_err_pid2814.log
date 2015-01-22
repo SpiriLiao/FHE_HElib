@@ -1,0 +1,454 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x006d6ef9, pid=2814, tid=3078114160
+#
+# JRE version: Java(TM) SE Runtime Environment (7.0_72-b14) (build 1.7.0_72-b14)
+# Java VM: Java HotSpot(TM) Server VM (24.72-b04 mixed mode linux-x86 )
+# Problematic frame:
+# C  [libser_FHE_J.so+0xa3ef9]  Java_Jser_1FHE_service+0xf79
+#
+# Failed to write core dump. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+# If you would like to submit a bug report, please visit:
+#   http://bugreport.sun.com/bugreport/crash.jsp
+# The crash happened outside the Java Virtual Machine in native code.
+# See problematic frame for where to report the bug.
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0xb7606400):  JavaThread "main" [_thread_in_native, id=2815, stack(0xb7734000,0xb7785000)]
+
+siginfo:si_signo=SIGSEGV: si_errno=0, si_code=1 (SEGV_MAPERR), si_addr=0x0000000c
+
+Registers:
+EAX=0x9107495c, EBX=0x00894280, ECX=0x9107495c, EDX=0x0000000c
+ESP=0xb77836e0, EBP=0x91074920, ESI=0x00000000, EDI=0x91074924
+EIP=0x006d6ef9, EFLAGS=0x00010206, CR2=0x0000000c
+
+Top of Stack: (sp=0xb77836e0)
+0xb77836e0:   91074888 b7783768 00000000 00000000
+0xb77836f0:   910d7108 90900018 00022828 910749f8
+0xb7783700:   91074920 9107495c 91074868 91074880
+0xb7783710:   9107491c 00000000 00003b82 b7783854
+0xb7783720:   b7783870 b7783764 b77839c8 b77839d4
+0xb7783730:   b7783a5c b7783ae4 b7783c0c b7783908
+0xb7783740:   b76040d8 012b4f74 00000312 00000010
+0xb7783750:   000000d4 2aaaaaab 00000001 90922d5c 
+
+Instructions: (pc=0x006d6ef9)
+0x006d6ed9:   48 3c 89 c5 89 4c 24 24 8d 78 04 8d 74 26 00 8b
+0x006d6ee9:   44 24 24 89 ee 2b 74 24 20 8b 14 06 85 d2 74 08
+0x006d6ef9:   8b 0a 89 14 24 ff 51 0c 8b 55 1c 85 d2 74 08 89
+0x006d6f09:   14 24 e8 30 ce ff ff 8d 55 04 83 c5 40 89 14 24 
+
+Register to memory mapping:
+
+EAX=0x9107495c is an unknown value
+EBX=0x00894280: <offset 0x261280> in /usr/jdk7/lib/libser_FHE_J.so at 0x00633000
+ECX=0x9107495c is an unknown value
+EDX=0x0000000c is an unknown value
+ESP=0xb77836e0 is pointing into the stack for thread: 0xb7606400
+EBP=0x91074920 is an unknown value
+ESI=0x00000000 is an unknown value
+EDI=0x91074924 is an unknown value
+
+
+Stack: [0xb7734000,0xb7785000],  sp=0xb77836e0,  free space=317k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+C  [libser_FHE_J.so+0xa3ef9]  Java_Jser_1FHE_service+0xf79
+
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+j  Jser_FHE.service()I+0
+j  Jser_FHE.main([Ljava/lang/String;)V+9
+v  ~StubRoutines::call_stub
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x9102b400 JavaThread "Service Thread" daemon [_thread_blocked, id=2824, stack(0x90b39000,0x90b8a000)]
+  0x91029400 JavaThread "C2 CompilerThread1" daemon [_thread_blocked, id=2823, stack(0x90b8a000,0x90c0b000)]
+  0x91027400 JavaThread "C2 CompilerThread0" daemon [_thread_blocked, id=2822, stack(0x90c0b000,0x90c8c000)]
+  0x91025800 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=2821, stack(0x90c8c000,0x90cdd000)]
+  0x91015000 JavaThread "Finalizer" daemon [_thread_blocked, id=2820, stack(0x90edd000,0x90f2e000)]
+  0x91013800 JavaThread "Reference Handler" daemon [_thread_blocked, id=2819, stack(0x90f2e000,0x90f7f000)]
+=>0xb7606400 JavaThread "main" [_thread_in_native, id=2815, stack(0xb7734000,0xb7785000)]
+
+Other Threads:
+  0x91010c00 VMThread [stack: 0x90f7f000,0x91000000] [id=2818]
+  0x9102d400 WatcherThread [stack: 0x90ab8000,0x90b39000] [id=2825]
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Heap
+ PSYoungGen      total 8960K, used 461K [0xaa740000, 0xab140000, 0xb4540000)
+  eden space 7680K, 6% used [0xaa740000,0xaa7b3430,0xaaec0000)
+  from space 1280K, 0% used [0xab000000,0xab000000,0xab140000)
+  to   space 1280K, 0% used [0xaaec0000,0xaaec0000,0xab000000)
+ ParOldGen       total 20224K, used 0K [0x96b40000, 0x97f00000, 0xaa740000)
+  object space 20224K, 0% used [0x96b40000,0x96b40000,0x97f00000)
+ PSPermGen       total 16384K, used 1627K [0x92b40000, 0x93b40000, 0x96b40000)
+  object space 16384K, 9% used [0x92b40000,0x92cd6e30,0x93b40000)
+
+Card table byte_map: [0x92a32000,0x92b40000] byte_map_base: 0x9259c600
+
+Polling page: 0xb7796000
+
+Code Cache  [0xb4600000, 0xb4840000, 0xb7600000)
+ total_blobs=96 nmethods=0 adapters=66 free_code_cache=48863Kb largest_free_block=50036672
+
+Compilation events (0 events):
+No events
+
+GC Heap History (0 events):
+No events
+
+Deoptimization events (0 events):
+No events
+
+Internal exceptions (2 events):
+Event: 0.046 Thread 0xb7606400 Threw 0xaa74dfe0 at /HUDSON/workspace/7u-2-build-linux-i586/jdk7u72/1606/hotspot/src/share/vm/prims/jni.cpp:3991
+Event: 0.104 Thread 0xb7606400 Threw 0xaa7a6c38 at /HUDSON/workspace/7u-2-build-linux-i586/jdk7u72/1606/hotspot/src/share/vm/prims/jvm.cpp:1281
+
+Events (10 events):
+Event: 0.156 loading class 0x92774798
+Event: 0.156 loading class 0x92774798 done
+Event: 0.156 loading class 0x927467f0
+Event: 0.156 loading class 0x927467f0 done
+Event: 0.158 loading class 0x9272fd80
+Event: 0.158 loading class 0x9272fd80 done
+Event: 0.158 loading class 0x9272fd28
+Event: 0.158 loading class 0x9272fd28 done
+Event: 4.110 Executing VM operation: EnableBiasedLocking
+Event: 4.110 Executing VM operation: EnableBiasedLocking done
+
+
+Dynamic libraries:
+00165000-00170000 r-xp 00000000 08:02 310711     /usr/jdk7/jre/lib/i386/libverify.so
+00170000-00171000 rw-p 0000b000 08:02 310711     /usr/jdk7/jre/lib/i386/libverify.so
+00171000-00194000 r-xp 00000000 08:02 310728     /usr/jdk7/jre/lib/i386/libjava.so
+00194000-00195000 rw-p 00023000 08:02 310728     /usr/jdk7/jre/lib/i386/libjava.so
+00195000-001ac000 r-xp 00000000 08:02 310763     /usr/jdk7/jre/lib/i386/libzip.so
+001ac000-001ad000 rw-p 00017000 08:02 310763     /usr/jdk7/jre/lib/i386/libzip.so
+001ad000-002db000 r-xp 00000000 08:02 278589     /usr/lib/mysql/libmysqlclient.so.16.0.0
+002db000-00323000 rw-p 0012d000 08:02 278589     /usr/lib/mysql/libmysqlclient.so.16.0.0
+00323000-00335000 r-xp 00000000 08:02 6186       /lib/libz.so.1.2.3
+00335000-00336000 r--p 00011000 08:02 6186       /lib/libz.so.1.2.3
+00336000-00337000 rw-p 00012000 08:02 6186       /lib/libz.so.1.2.3
+00337000-0033b000 r-xp 00000000 08:02 6183       /lib/libgthread-2.0.so.0.2800.8
+0033b000-0033c000 rw-p 00003000 08:02 6183       /lib/libgthread-2.0.so.0.2800.8
+0033c000-0033f000 r-xp 00000000 08:02 6179       /lib/libcom_err.so.2.1
+0033f000-00340000 r--p 00002000 08:02 6179       /lib/libcom_err.so.2.1
+00340000-00341000 rw-p 00003000 08:02 6179       /lib/libcom_err.so.2.1
+00341000-00356000 r-xp 00000000 08:02 6175       /lib/libresolv-2.12.so
+00356000-00357000 ---p 00015000 08:02 6175       /lib/libresolv-2.12.so
+00357000-00358000 r--p 00015000 08:02 6175       /lib/libresolv-2.12.so
+00358000-00359000 rw-p 00016000 08:02 6175       /lib/libresolv-2.12.so
+00359000-0035b000 rw-p 00000000 00:00 0 
+0035b000-00378000 r-xp 00000000 08:02 6176       /lib/libselinux.so.1
+00378000-00379000 r--p 0001c000 08:02 6176       /lib/libselinux.so.1
+00379000-0037a000 rw-p 0001d000 08:02 6176       /lib/libselinux.so.1
+0039d000-003a9000 r-xp 00000000 08:02 935        /lib/libnss_files-2.12.so
+003a9000-003aa000 r--p 0000b000 08:02 935        /lib/libnss_files-2.12.so
+003aa000-003ab000 rw-p 0000c000 08:02 935        /lib/libnss_files-2.12.so
+003ec000-00409000 r-xp 00000000 08:02 6189       /lib/libgcc_s-4.4.7-20120601.so.1
+00409000-0040a000 rw-p 0001d000 08:02 6189       /lib/libgcc_s-4.4.7-20120601.so.1
+0040c000-0040e000 r-xp 00000000 08:02 6174       /lib/libkeyutils.so.1.3
+0040e000-0040f000 r--p 00001000 08:02 6174       /lib/libkeyutils.so.1.3
+0040f000-00410000 rw-p 00002000 08:02 6174       /lib/libkeyutils.so.1.3
+0041c000-0043a000 r-xp 00000000 08:02 6166       /lib/ld-2.12.so
+0043a000-0043b000 r--p 0001d000 08:02 6166       /lib/ld-2.12.so
+0043b000-0043c000 rw-p 0001e000 08:02 6166       /lib/ld-2.12.so
+00442000-005d2000 r-xp 00000000 08:02 6167       /lib/libc-2.12.so
+005d2000-005d4000 r--p 00190000 08:02 6167       /lib/libc-2.12.so
+005d4000-005d5000 rw-p 00192000 08:02 6167       /lib/libc-2.12.so
+005d5000-005d8000 rw-p 00000000 00:00 0 
+005da000-005f1000 r-xp 00000000 08:02 6169       /lib/libpthread-2.12.so
+005f1000-005f2000 r--p 00016000 08:02 6169       /lib/libpthread-2.12.so
+005f2000-005f3000 rw-p 00017000 08:02 6169       /lib/libpthread-2.12.so
+005f3000-005f5000 rw-p 00000000 00:00 0 
+005f7000-005fa000 r-xp 00000000 08:02 6168       /lib/libdl-2.12.so
+005fa000-005fb000 r--p 00002000 08:02 6168       /lib/libdl-2.12.so
+005fb000-005fc000 rw-p 00003000 08:02 6168       /lib/libdl-2.12.so
+005fe000-00605000 r-xp 00000000 08:02 6170       /lib/librt-2.12.so
+00605000-00606000 r--p 00006000 08:02 6170       /lib/librt-2.12.so
+00606000-00607000 rw-p 00007000 08:02 6170       /lib/librt-2.12.so
+00609000-00631000 r-xp 00000000 08:02 6188       /lib/libm-2.12.so
+00631000-00632000 r--p 00027000 08:02 6188       /lib/libm-2.12.so
+00632000-00633000 rw-p 00028000 08:02 6188       /lib/libm-2.12.so
+00633000-00894000 r-xp 00000000 08:02 272035     /usr/jdk7/lib/libser_FHE_J.so
+00894000-00895000 rw-p 00261000 08:02 272035     /usr/jdk7/lib/libser_FHE_J.so
+00895000-00896000 rw-p 00000000 00:00 0 
+009a2000-009b5000 r-xp 00000000 08:02 309073     /usr/jdk7/lib/i386/jli/libjli.so
+009b5000-009b6000 rw-p 00012000 08:02 309073     /usr/jdk7/lib/i386/jli/libjli.so
+009e3000-009e4000 r-xp 00000000 00:00 0          [vdso]
+009e4000-01269000 r-xp 00000000 08:02 310762     /usr/jdk7/jre/lib/i386/server/libjvm.so
+01269000-012cd000 rw-p 00884000 08:02 310762     /usr/jdk7/jre/lib/i386/server/libjvm.so
+012cd000-016f0000 rw-p 00000000 00:00 0 
+016f0000-0180c000 r-xp 00000000 08:02 6182       /lib/libglib-2.0.so.0.2800.8
+0180c000-0180d000 rw-p 0011b000 08:02 6182       /lib/libglib-2.0.so.0.2800.8
+0539d000-0554b000 r-xp 00000000 08:02 284739     /usr/lib/libcrypto.so.1.0.1e
+0554b000-0555b000 r--p 001ad000 08:02 284739     /usr/lib/libcrypto.so.1.0.1e
+0555b000-05562000 rw-p 001bd000 08:02 284739     /usr/lib/libcrypto.so.1.0.1e
+05562000-05565000 rw-p 00000000 00:00 0 
+05567000-055c8000 r-xp 00000000 08:02 284740     /usr/lib/libssl.so.1.0.1e
+055c8000-055ca000 r--p 00061000 08:02 284740     /usr/lib/libssl.so.1.0.1e
+055ca000-055ce000 rw-p 00063000 08:02 284740     /usr/lib/libssl.so.1.0.1e
+05f50000-0624b000 r-xp 00000000 08:02 348018     /usr/local/lib/libQtCore.so.4.8.2
+0624b000-06252000 r--p 002fa000 08:02 348018     /usr/local/lib/libQtCore.so.4.8.2
+06252000-06255000 rw-p 00301000 08:02 348018     /usr/local/lib/libQtCore.so.4.8.2
+07994000-079f0000 r-xp 00000000 08:02 6171       /lib/libfreebl3.so
+079f0000-079f1000 ---p 0005c000 08:02 6171       /lib/libfreebl3.so
+079f1000-079f2000 r--p 0005c000 08:02 6171       /lib/libfreebl3.so
+079f2000-079f3000 rw-p 0005d000 08:02 6171       /lib/libfreebl3.so
+079f3000-079f7000 rw-p 00000000 00:00 0 
+079f9000-07a00000 r-xp 00000000 08:02 6172       /lib/libcrypt-2.12.so
+07a00000-07a01000 r--p 00007000 08:02 6172       /lib/libcrypt-2.12.so
+07a01000-07a02000 rw-p 00008000 08:02 6172       /lib/libcrypt-2.12.so
+07a02000-07a29000 rw-p 00000000 00:00 0 
+07a2b000-07b0c000 r-xp 00000000 08:02 262332     /usr/lib/libstdc++.so.6.0.13
+07b0c000-07b10000 r--p 000e0000 08:02 262332     /usr/lib/libstdc++.so.6.0.13
+07b10000-07b12000 rw-p 000e4000 08:02 262332     /usr/lib/libstdc++.so.6.0.13
+07b12000-07b18000 rw-p 00000000 00:00 0 
+07b1a000-07b42000 r-xp 00000000 08:02 6178       /lib/libk5crypto.so.3.1
+07b42000-07b43000 r--p 00028000 08:02 6178       /lib/libk5crypto.so.3.1
+07b43000-07b44000 rw-p 00029000 08:02 6178       /lib/libk5crypto.so.3.1
+07b44000-07b45000 rw-p 00000000 00:00 0 
+07b47000-07c1d000 r-xp 00000000 08:02 6180       /lib/libkrb5.so.3.3
+07c1d000-07c23000 r--p 000d5000 08:02 6180       /lib/libkrb5.so.3.3
+07c23000-07c24000 rw-p 000db000 08:02 6180       /lib/libkrb5.so.3.3
+07e0c000-07e16000 r-xp 00000000 08:02 6177       /lib/libkrb5support.so.0.1
+07e16000-07e17000 r--p 00009000 08:02 6177       /lib/libkrb5support.so.0.1
+07e17000-07e18000 rw-p 0000a000 08:02 6177       /lib/libkrb5support.so.0.1
+07e1a000-07e58000 r-xp 00000000 08:02 6203       /lib/libgssapi_krb5.so.2.2
+07e58000-07e59000 r--p 0003e000 08:02 6203       /lib/libgssapi_krb5.so.2.2
+07e59000-07e5a000 rw-p 0003f000 08:02 6203       /lib/libgssapi_krb5.so.2.2
+07fae000-07fc5000 r-xp 00000000 08:02 6211       /lib/libnsl-2.12.so
+07fc5000-07fc6000 r--p 00016000 08:02 6211       /lib/libnsl-2.12.so
+07fc6000-07fc7000 rw-p 00017000 08:02 6211       /lib/libnsl-2.12.so
+07fc7000-07fc9000 rw-p 00000000 00:00 0 
+08048000-08049000 r-xp 00000000 08:02 310233     /usr/jdk7/bin/java
+08049000-0804a000 rw-p 00000000 08:02 310233     /usr/jdk7/bin/java
+085ab000-085cc000 rw-p 00000000 00:00 0          [heap]
+90900000-9093c000 rw-p 00000000 00:00 0 
+9093c000-90a00000 ---p 00000000 00:00 0 
+90ab8000-90ab9000 ---p 00000000 00:00 0 
+90ab9000-90b39000 rw-p 00000000 00:00 0 
+90b39000-90b3c000 ---p 00000000 00:00 0 
+90b3c000-90b8a000 rw-p 00000000 00:00 0 
+90b8a000-90b8d000 ---p 00000000 00:00 0 
+90b8d000-90c0b000 rw-p 00000000 00:00 0 
+90c0b000-90c0e000 ---p 00000000 00:00 0 
+90c0e000-90c8c000 rw-p 00000000 00:00 0 
+90c8c000-90c8f000 ---p 00000000 00:00 0 
+90c8f000-90cdd000 rw-p 00000000 00:00 0 
+90cdd000-90edd000 r--p 00000000 08:02 302358     /usr/lib/locale/locale-archive
+90edd000-90ee0000 ---p 00000000 00:00 0 
+90ee0000-90f2e000 rw-p 00000000 00:00 0 
+90f2e000-90f31000 ---p 00000000 00:00 0 
+90f31000-90f7f000 rw-p 00000000 00:00 0 
+90f7f000-90f80000 ---p 00000000 00:00 0 
+90f80000-91000000 rw-p 00000000 00:00 0 
+91000000-910f0000 rw-p 00000000 00:00 0 
+910f0000-91100000 ---p 00000000 00:00 0 
+9110b000-91156000 rw-p 00000000 00:00 0 
+91156000-91316000 r--s 039ea000 08:02 310240     /usr/jdk7/jre/lib/rt.jar
+91316000-92600000 rw-p 00000000 00:00 0 
+92600000-92621000 rw-p 00000000 00:00 0 
+92621000-92700000 ---p 00000000 00:00 0 
+92724000-9277f000 rw-p 00000000 00:00 0 
+9277f000-92780000 ---p 00000000 00:00 0 
+92780000-92800000 rw-p 00000000 00:00 0 
+92800000-92821000 rw-p 00000000 00:00 0 
+92821000-92900000 ---p 00000000 00:00 0 
+92913000-92914000 ---p 00000000 00:00 0 
+92914000-9299e000 rw-p 00000000 00:00 0 
+9299e000-92a32000 rw-p 00000000 00:00 0 
+92a32000-92a3a000 rw-p 00000000 00:00 0 
+92a3a000-92a52000 rw-p 00000000 00:00 0 
+92a52000-92a5c000 rw-p 00000000 00:00 0 
+92a5c000-92af0000 rw-p 00000000 00:00 0 
+92af0000-92af5000 rw-p 00000000 00:00 0 
+92af5000-92b3f000 rw-p 00000000 00:00 0 
+92b3f000-93b40000 rw-p 00000000 00:00 0 
+93b40000-96b40000 rw-p 00000000 00:00 0 
+96b40000-97f00000 rw-p 00000000 00:00 0 
+97f00000-aa740000 rw-p 00000000 00:00 0 
+aa740000-ab140000 rw-p 00000000 00:00 0 
+ab140000-b4540000 rw-p 00000000 00:00 0 
+b4540000-b4549000 rw-p 00000000 00:00 0 
+b4549000-b4600000 rw-p 00000000 00:00 0 
+b4600000-b4840000 rwxp 00000000 00:00 0 
+b4840000-b76f1000 rw-p 00000000 00:00 0 
+b76f1000-b7700000 ---p 00000000 00:00 0 
+b7707000-b771c000 rw-p 00000000 00:00 0 
+b771c000-b7734000 rw-p 00000000 00:00 0 
+b7734000-b7737000 ---p 00000000 00:00 0 
+b7737000-b7787000 rw-p 00000000 00:00 0 
+b778c000-b778d000 rw-p 00000000 00:00 0 
+b778d000-b7795000 rw-s 00000000 08:02 297165     /tmp/hsperfdata_root/2814
+b7795000-b7796000 rw-p 00000000 00:00 0 
+b7796000-b7797000 r--p 00000000 00:00 0 
+b7797000-b7798000 rw-p 00000000 00:00 0 
+bfe60000-bfe61000 rwxp 00000000 00:00 0 
+bfe9f000-bfeb4000 rw-p 00000000 00:00 0          [stack]
+
+VM Arguments:
+java_command: Jser_FHE
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+JAVA_HOME=/usr/jdk7
+CLASSPATH=.:/usr/jdk7/lib
+PATH=/usr/jdk7/bin:/usr/lib/qt-3.3/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/lhk/bin
+USERNAME=lhk
+LD_LIBRARY_PATH=/usr/jdk7/lib:/home/qtdll/CDll
+SHELL=/bin/bash
+DISPLAY=:0.0
+
+Signal Handlers:
+SIGSEGV: [libjvm.so+0x7e9580], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGBUS: [libjvm.so+0x7e9580], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGFPE: [libjvm.so+0x682680], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGPIPE: SIG_IGN, sa_mask[0]=0x00001000, sa_flags=0x10000000
+SIGXFSZ: [libjvm.so+0x682680], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGILL: [libjvm.so+0x682680], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGUSR1: SIG_DFL, sa_mask[0]=0x00000000, sa_flags=0x00000000
+SIGUSR2: [libjvm.so+0x683e80], sa_mask[0]=0x00000000, sa_flags=0x10000004
+SIGHUP: [libjvm.so+0x6851b0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGINT: [libjvm.so+0x6851b0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGTERM: [libjvm.so+0x6851b0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGQUIT: [libjvm.so+0x6851b0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+
+
+---------------  S Y S T E M  ---------------
+
+OS:CentOS release 6.6 (Final)
+
+uname:Linux 2.6.32-504.el6.i686 #1 SMP Wed Oct 15 03:02:07 UTC 2014 i686
+libc:glibc 2.12 NPTL 2.12 
+rlimit: STACK 10240k, CORE 0k, NPROC 15009, NOFILE 4096, AS infinity
+load average:0.10 0.07 0.04
+
+/proc/meminfo:
+MemTotal:        1939464 kB
+MemFree:         1187328 kB
+Buffers:           41252 kB
+Cached:           438524 kB
+SwapCached:            0 kB
+Active:           269900 kB
+Inactive:         390632 kB
+Active(anon):     180788 kB
+Inactive(anon):     6852 kB
+Active(file):      89112 kB
+Inactive(file):   383780 kB
+Unevictable:           0 kB
+Mlocked:               0 kB
+HighTotal:       1058440 kB
+HighFree:         423956 kB
+LowTotal:         881024 kB
+LowFree:          763372 kB
+SwapTotal:       2054140 kB
+SwapFree:        2054140 kB
+Dirty:               284 kB
+Writeback:             0 kB
+AnonPages:        180648 kB
+Mapped:           108888 kB
+Shmem:              6968 kB
+Slab:              58516 kB
+SReclaimable:      19748 kB
+SUnreclaim:        38768 kB
+KernelStack:        2456 kB
+PageTables:         8368 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:     3023872 kB
+Committed_AS:    1051152 kB
+VmallocTotal:     122880 kB
+VmallocUsed:       16140 kB
+VmallocChunk:      90356 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+DirectMap4k:       10232 kB
+DirectMap2M:      897024 kB
+
+
+CPU:total 2 (2 cores per cpu, 1 threads per core) family 6 model 14 stepping 12, cmov, cx8, fxsr, mmx, sse, sse2, sse3, tsc
+
+/proc/cpuinfo:
+processor	: 0
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 14
+model name	: Intel(R) Core(TM) Duo CPU      T2500  @ 2.00GHz
+stepping	: 12
+microcode	: 84
+cpu MHz		: 1000.000
+cache size	: 2048 KB
+physical id	: 0
+siblings	: 2
+core id		: 0
+cpu cores	: 2
+apicid		: 0
+initial apicid	: 0
+fdiv_bug	: no
+hlt_bug		: no
+f00f_bug	: no
+coma_bug	: no
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 10
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic mtrr pge mca cmov clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe constant_tsc arch_perfmon bts aperfmperf pni monitor vmx est tm2 xtpr pdcm dts
+bogomips	: 3989.88
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 32 bits physical, 32 bits virtual
+power management:
+
+processor	: 1
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 14
+model name	: Intel(R) Core(TM) Duo CPU      T2500  @ 2.00GHz
+stepping	: 12
+microcode	: 84
+cpu MHz		: 2000.000
+cache size	: 2048 KB
+physical id	: 0
+siblings	: 2
+core id		: 1
+cpu cores	: 2
+apicid		: 1
+initial apicid	: 1
+fdiv_bug	: no
+hlt_bug		: no
+f00f_bug	: no
+coma_bug	: no
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 10
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic mtrr pge mca cmov clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe constant_tsc arch_perfmon bts aperfmperf pni monitor vmx est tm2 xtpr pdcm dts
+bogomips	: 3989.88
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 32 bits physical, 32 bits virtual
+power management:
+
+
+
+Memory: 4k page, physical 1939464k(1187328k free), swap 2054140k(2054140k free)
+
+vm_info: Java HotSpot(TM) Server VM (24.72-b04) for linux-x86 JRE (1.7.0_72-b14), built on Sep 26 2014 19:38:09 by "java_re" with gcc 4.3.0 20080428 (Red Hat 4.3.0-8)
+
+time: Fri Jan 23 04:59:40 2015
+elapsed time: 44 seconds
+

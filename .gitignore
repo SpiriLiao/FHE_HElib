@@ -1,6 +1,6 @@
 *~
 *.o
-cli_FHE/cli_FHE
-ser_FHE/ser_FHE
-cli/cli
-ser/ser
+cli/cli/*.o
+ser/ser/*.o
+cli_FHE/cli_FHE/*.o
+ser_FHE/ser_FHE/*.o
