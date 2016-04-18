@@ -8,5 +8,3 @@ FHE_HElib
 工程中使用到的HElib，<a href=http://www.shoup.net/ntl/>NTL(ntl6.0及以上)</a>，以及gmp库(一般OS默认安装)请自行编译，
 
 开发工具是qtcreator2.5.2 qtlib4.8.4 <a href="http://download.qt.io/archive/">下载</a>
-
-						qq:2369591203
